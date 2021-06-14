@@ -19,25 +19,8 @@ class WorkoutAdapter(private val onMarkChanged: (Data) -> Unit) : BaseBindingAda
         val item = list[position]
         dataBinding.apply {
             data = item
-            viewGroup.removeAllViews()
-            item.assignments.forEach { assignment ->
-                viewGroup.addView(
-                    CustomWorkoutViewBinding.inflate(LayoutInflater.from(root.context)).apply {
-                        this.root.layoutParams = ConstraintLayout.LayoutParams(
-                            ConstraintLayout.LayoutParams.MATCH_PARENT,
-                            ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                        ).apply {
-                            setMargins(0.dp, 8.dp, 0.dp, 0.dp)
-                        }
-                        this.data = assignment
-                        this.status = assignment.getStatus(item.timestamp)
-                        setOnItemClicked {
-                            assignment.isCompletedMarked = !assignment.isCompletedMarked
-                            notifyItemChanged(position)
-                            onMarkChanged.invoke(item)
-                        }
-                    }.root
-                )
+            rvAssignment.adapter = AssignmentAdapter(item, onMarkChanged).apply {
+                updateData(item.assignments)
             }
             executePendingBindings()
         }
