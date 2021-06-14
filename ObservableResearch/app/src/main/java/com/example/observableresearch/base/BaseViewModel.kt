@@ -3,18 +3,21 @@ package com.example.observableresearch.base
 import androidx.lifecycle.*
 import com.example.observableresearch.base.viewmodel.DataState
 import com.example.observableresearch.extensions.logError
-import com.example.observableresearch.utils.observer.AutoDisposable
+import com.example.observableresearch.utils.observer.DisposableBag
+import io.reactivex.subjects.BehaviorSubject
 
 abstract class BaseViewModel : ViewModel(), LifecycleObserver {
 
     private val TAG = this::class.simpleName
 
+    val data = BehaviorSubject.create<String>()
+
     protected val _stateObs = MutableLiveData<DataState>()
     val stateObs: LiveData<DataState>
         get() = _stateObs
 
-    protected val compositeDisposable: AutoDisposable by lazy {
-        AutoDisposable()
+    protected val compositeDisposableBag: DisposableBag by lazy {
+        DisposableBag()
     }
 
     fun setLoading(isLoading: Boolean) {
@@ -28,6 +31,6 @@ abstract class BaseViewModel : ViewModel(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        compositeDisposable.onStop()
+        compositeDisposableBag.onStop()
     }
 }

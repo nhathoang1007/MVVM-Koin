@@ -1,6 +1,6 @@
 package com.tuan88291.webrtcdemo.utils.observe
 
-import com.example.observableresearch.utils.observer.AutoDisposable
+import com.example.observableresearch.utils.observer.DisposableBag
 import com.example.observableresearch.utils.observer.addTo
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -38,7 +38,7 @@ abstract class ObserveEasy protected constructor() {
 
     }
 
-    protected abstract fun getDispose(): AutoDisposable?
+    protected abstract fun getDispose(): DisposableBag?
     protected abstract fun doBackground(): Any?
 
     protected open fun onSuccess(result: Any?) {}

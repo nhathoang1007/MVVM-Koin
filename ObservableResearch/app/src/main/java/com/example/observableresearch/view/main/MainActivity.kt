@@ -1,19 +1,10 @@
 package com.example.observableresearch.view.main
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.util.Log
+import androidx.core.widget.doAfterTextChanged
 import com.example.observableresearch.R
 import com.example.observableresearch.base.view.BaseActivity
-import com.example.observableresearch.base.viewmodel.DataState
-import com.example.observableresearch.data.storage.SharedKey
 import com.example.observableresearch.databinding.ActivityMainBinding
-import com.example.observableresearch.extensions.observeOnUiThread
 import com.example.observableresearch.utils.MyHandler
-import com.example.observableresearch.utils.SharedPrefs
-import com.example.observableresearch.utils.observer.AutoDisposable
-import com.example.observableresearch.utils.observer.addTo
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
@@ -27,5 +18,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         MyHandler().postDelayed({
             mViewModel.testPrefs()
         }, 1000)
+    }
+
+    override fun initView() {
+        super.initView()
+        dataBinding.apply {
+            iVew = this@MainActivity
+            edtEmail.doAfterTextChanged {
+                mViewModel.onEmailChanged(it.toString())
+            }
+            edtPassword.doAfterTextChanged {
+                mViewModel.onPasswordChanged(it.toString())
+            }
+        }
     }
 }
