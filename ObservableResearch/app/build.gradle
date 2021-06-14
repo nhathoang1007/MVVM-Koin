@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
+    id 'realm-android'
 }
 
 apply from: rootProject.file("dependencies.gradle")
@@ -36,6 +38,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    sourceSets {
+        main {
+            assets {
+                srcDirs 'src/main/assets'
+            }
+        }
+    }
 }
 
 dependencies {
@@ -57,9 +66,6 @@ dependencies {
     implementation deps.resful.retrofit2
     implementation deps.resful.logd
     implementation deps.resful.logging
-    implementation deps.db.runtime
-    kapt deps.db.compiler
-    androidTestImplementation deps.db.test
     implementation deps.lifecycler.extension
     implementation deps.lifecycler.viewmodel
     implementation deps.lifecycler.java8

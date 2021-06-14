@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.observableresearch.extensions.StringCompatKt" />
+
+        <import type="com.example.observableresearch.extensions.MyCompatKt" />
+
+        <import type="com.example.observableresearch.extensions.DateTimeKt" />
+
+        <import type="com.example.observableresearch.utils.Constants" />
+
+        <import type="com.example.observableresearch.R" />
+
+        <variable
+            name="data"
+            type="com.example.observableresearch.model.Data" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_19sdp"
+        android:paddingStart="@dimen/_19sdp"
+        android:paddingEnd="@dimen/_21sdp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDayOfMonth"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{DateTimeKt.timeFormat(data.timestamp, Constants.DAY_OF_WEEK)}"
+            android:textAllCaps="true"
+            android:textColor="@{MyCompatKt.getColor(DateTimeKt.isToday(data.timestamp) ? R.color.color_blue: R.color.color_grey)}"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{DateTimeKt.timeFormat(data.timestamp, Constants.DATE_OF_MONTH)}"
+            android:textColor="@{MyCompatKt.getColor(DateTimeKt.isToday(data.timestamp) ? R.color.color_blue: R.color.color_text_default)}"
+            android:textSize="@dimen/_16sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline" />
+
+        <LinearLayout
+            android:id="@+id/view_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvDayOfMonth"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

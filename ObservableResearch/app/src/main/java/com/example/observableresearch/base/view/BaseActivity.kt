@@ -16,7 +16,8 @@ import com.example.observableresearch.base.viewmodel.DataState
 import com.example.observableresearch.customize.dialog.LoadingDialog
 import com.example.observableresearch.extensions.logError
 
-abstract class BaseActivity<V: ViewDataBinding, VM: BaseViewModel>: AppCompatActivity(), BaseView<VM> {
+abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity(),
+    BaseView<VM> {
 
     protected val TAG = this::class.simpleName
 
@@ -41,7 +42,10 @@ abstract class BaseActivity<V: ViewDataBinding, VM: BaseViewModel>: AppCompatAct
             stateObs.observe(this@BaseActivity, Observer {
                 when (it) {
                     is DataState.Loading -> handelLoading(it)
-                    is DataState.Failure -> handelError(it)
+                    is DataState.Failure -> {
+                        handelLoading(DataState.Loading(false))
+                        handelError(it)
+                    }
                     else -> {
                         Log.d(TAG, "State not detected!")
                     }

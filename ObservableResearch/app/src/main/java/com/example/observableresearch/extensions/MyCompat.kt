@@ -11,3 +11,8 @@ fun applicationContext(): Context {
 fun Int.getColor(): Int {
     return ContextCompat.getColor(applicationContext(), this)
 }
+
+
+fun Int.getString(): String {
+    return applicationContext().getString(this)
+}

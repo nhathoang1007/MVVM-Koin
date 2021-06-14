@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ObservableResearch</string>
+
+    <string name="exercises_size">%s exercise(s)</string>
+    <string name="completed">Completed</string>
+    <string name="missed">Missed</string>
 </resources>

@@ -2,6 +2,7 @@ package com.example.observableresearch.base
 
 import androidx.lifecycle.*
 import com.example.observableresearch.base.viewmodel.DataState
+import com.example.observableresearch.extensions.getDefault
 import com.example.observableresearch.extensions.logError
 import com.example.observableresearch.utils.observer.DisposableBag
 import io.reactivex.subjects.BehaviorSubject
@@ -26,6 +27,7 @@ abstract class BaseViewModel : ViewModel(), LifecycleObserver {
     }
 
     fun setError(message: String? = null, error: Throwable? = null) {
+        TAG?.logError(error?.message.getDefault())
         _stateObs.postValue(DataState.Failure(message = message, t = error))
     }
 

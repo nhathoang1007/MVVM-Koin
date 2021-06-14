@@ -13,7 +13,7 @@ class ServiceApi: iServiceApi {
     private val logging = HttpLoggingInterceptor()
     private val httpClient: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
     private val builder = Retrofit.Builder()
-        .baseUrl("http://192.168.0.141:3000/")
+        .baseUrl("http://demo2187508.mockable.io/")
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
 

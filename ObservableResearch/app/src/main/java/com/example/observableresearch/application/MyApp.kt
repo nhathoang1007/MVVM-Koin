@@ -1,18 +1,18 @@
 package com.example.observableresearch.application
 
-import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
-import com.example.observableresearch.di.resourceModule
-import com.example.observableresearch.di.viewModelModule
+import com.example.observableresearch.di.*
+import com.example.observableresearch.di.retrofitModule
+import io.realm.Realm
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class MyApp: MultiDexApplication() {
+class MyApp : MultiDexApplication() {
 
     init {
         instance = this
@@ -25,8 +25,17 @@ class MyApp: MultiDexApplication() {
             androidLogger(Level.DEBUG)
             androidContext(this@MyApp)
             androidFileProperties()
-            modules(listOf(resourceModule, viewModelModule))
+            modules(
+                listOf(
+                    resourceModule,
+                    dbModule,
+                    retrofitModule,
+                    repositoryModule,
+                    viewModelModule
+                )
+            )
         }
+        Realm.init(this)
     }
 
     companion object {

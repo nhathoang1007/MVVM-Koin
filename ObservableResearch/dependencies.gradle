@@ -8,7 +8,7 @@ ext.versions = [
         buld_version: "4.0.1"
 ]
 ext.arch = [
-        koin: '2.1.6',
+        koin: '2.2.0-alpha-1',
         room: '2.2.2',
         retrofit: '2.6.2',
         lifecycler: '2.1.0',
