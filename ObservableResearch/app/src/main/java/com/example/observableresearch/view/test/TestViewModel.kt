@@ -1,6 +1,7 @@
 package com.example.observableresearch.view.test
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.observableresearch.base.BaseViewModel
@@ -65,6 +66,7 @@ class TestViewModel(private val repository: WorkoutRepository) : BaseViewModel()
             }.flatMap { list ->
                 _dataObs.postValue(list)
                 repository.saveWorkoutToLocalStorage(list)
+                    .observeOnUiThread()
             }.subscribe({
                 setLoading(false)
             }, {
@@ -74,11 +76,14 @@ class TestViewModel(private val repository: WorkoutRepository) : BaseViewModel()
 
     private fun List<Data>.merge(): MutableList<Data> {
         val value = _dataObs.value ?: mutableListOf()
+        val group = this.associateBy { it.day }
 
         value.forEach {
-            this.find { f -> f.day == it.day }?.apply {
+            group[it.day]?.apply {
                 it._id = _id
-                it.assignments = assignments
+                if (it.assignments.isNullOrEmpty()) {
+                    it.assignments = assignments
+                }
             }
         }
         return value
@@ -87,9 +92,7 @@ class TestViewModel(private val repository: WorkoutRepository) : BaseViewModel()
     fun onMarkAssignment(data: Data) {
         repository.updateAssignmentMark(data)
             .observeOnUiThread()
-            .subscribe({}, {
-                setError(error = it)
-            }).addTo(compositeDisposableBag)
+            .subscribe({}, {setError(error = it) }).addTo(compositeDisposableBag)
     }
 }
 

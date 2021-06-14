@@ -1,11 +1,11 @@
 package com.example.observableresearch.data.storage.realm
 
 import com.example.observableresearch.extensions.getDefault
+import com.example.observableresearch.model.Assignment
 import com.example.observableresearch.model.Data
 import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.RealmList
-import java.lang.Exception
 
 /**
  * Created by NhiNguyen on 4/16/2020.
@@ -26,11 +26,12 @@ class WorkoutDao : IWorkoutDao {
 
     override fun getAll(): Observable<MutableList<Data>> {
         return Observable.create { emitter ->
-            Realm.getDefaultInstance().use { realm ->
-                realm.executeTransactionAsync {
-                    val realmResults = it.where(Data::class.java).findAll()
-                    emitter.onNext(it.copyFromRealm(realmResults))
+            Realm.getDefaultInstance().use {
+                it.executeTransactionAsync { realm ->
+                    val realmResults = realm.where(Data::class.java).findAll()
+                    emitter.onNext(realm.copyFromRealm(realmResults))
                     emitter.onComplete()
+
                 }
             }
         }
@@ -40,19 +41,33 @@ class WorkoutDao : IWorkoutDao {
         return Observable.create { emitter ->
             Realm.getDefaultInstance().use {
                 it.executeTransactionAsync { realm ->
-                    // find the item
                     val item = realm.where(Data::class.java)
                         .equalTo(ID, data._id).findFirst()
                     item?.apply {
                         day = data.day.getDefault()
                         timestamp = data.timestamp?.getDefault()
-                        assignments = data.assignments
+                        assignments = toRealmList(realm, data.assignments)
                     }
                     emitter.onNext(true)
                     emitter.onComplete()
                 }
             }
         }
+    }
+
+    private fun toRealmList(realm: Realm, arrayList: RealmList<Assignment>): RealmList<Assignment> {
+        val mRealmList = RealmList<Assignment>()
+        arrayList.forEach {
+            // Create a IncidentPhoto object which is managed by Realm.
+            val data: Assignment = realm.createObject(Assignment::class.java)
+            data._id = it._id
+            data.isCompletedMarked = it.isCompletedMarked
+            data.title = it.title
+            data.status = it.status
+            data.exerciseCount = it.exerciseCount
+            mRealmList.add(data)
+        }
+        return mRealmList
     }
 
     companion object {

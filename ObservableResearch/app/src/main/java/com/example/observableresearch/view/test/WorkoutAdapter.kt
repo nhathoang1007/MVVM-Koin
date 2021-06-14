@@ -7,7 +7,6 @@ import com.example.observableresearch.base.adapter.BaseBindingAdapter
 import com.example.observableresearch.databinding.CustomWorkoutViewBinding
 import com.example.observableresearch.databinding.ViewDailyWorkoutBinding
 import com.example.observableresearch.extensions.dp
-import com.example.observableresearch.model.Assignment
 import com.example.observableresearch.model.Data
 
 /**
@@ -31,9 +30,9 @@ class WorkoutAdapter(private val onMarkChanged: (Data) -> Unit) : BaseBindingAda
                             setMargins(0.dp, 8.dp, 0.dp, 0.dp)
                         }
                         this.data = assignment
-                        this.timestamp = item.timestamp
+                        this.status = assignment.getStatus(item.timestamp)
                         setOnItemClicked {
-                            assignment.isMarked = !assignment.isMarked
+                            assignment.isCompletedMarked = !assignment.isCompletedMarked
                             notifyItemChanged(position)
                             onMarkChanged.invoke(item)
                         }
@@ -41,6 +40,17 @@ class WorkoutAdapter(private val onMarkChanged: (Data) -> Unit) : BaseBindingAda
                 )
             }
             executePendingBindings()
+        }
+    }
+
+    override fun updateData(list: MutableList<Data>) {
+        val isFirstInit = this.list.isEmpty()
+        this.list.clear()
+        this.list.addAll(list)
+        if (isFirstInit) {
+            notifyDataSetChanged()
+        } else {
+            notifyItemRangeChanged(0, this.list.size)
         }
     }
 }

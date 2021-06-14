@@ -11,13 +11,16 @@
 
         <import type="com.example.observableresearch.R" />
 
-        <variable
-            name="timestamp"
-            type="String" />
+        <import type="kotlin.Pair" />
+        <import type="android.text.SpannableStringBuilder" />
 
         <variable
             name="data"
             type="com.example.observableresearch.model.Assignment" />
+
+        <variable
+            name="status"
+            type="Pair&lt;SpannableStringBuilder, Integer&gt;" />
 
         <variable
             name="onItemClicked"
@@ -30,7 +33,7 @@
         android:background="@drawable/selector_workout_background"
         android:onClick="@{onItemClicked}"
         android:padding="@dimen/_16sdp"
-        app:isSelected="@{data.marked}">
+        app:isSelected="@{data.completedTask }">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvWorkOutName"
@@ -40,7 +43,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:text="@{data.title}"
-            android:textColor="@{MyCompatKt.getColor(data.marked ? R.color.white: R.color.color_text_default)}"
+            android:textColor="@{MyCompatKt.getColor(status.second)}"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -58,12 +61,13 @@
             android:id="@+id/tvExercises"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginEnd="@dimen/_16sdp"
             android:ellipsize="end"
             android:lines="1"
-            android:text="@{data.getStatus(timestamp)}"
-            android:textColor="@{MyCompatKt.getColor(data.marked ? R.color.white: R.color.color_text_default)}"
-            android:textSize="@dimen/_15sdp"
+            android:text="@{status.first}"
+            android:textColor="@{MyCompatKt.getColor(status.second)}"
+            android:textSize="@dimen/_13sdp"
             app:layout_constraintEnd_toStartOf="@+id/icChecked"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/guideline" />
@@ -74,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_8sdp"
             android:src="@drawable/ic_checked"
-            app:isVisible="@{data.marked}"
+            app:isVisible="@{data.completedTask}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -17,7 +17,7 @@ fun String?.timeFormat(dateTimeFormat: String?): String {
             timeFormat = "dd MMM yyyy"
         }
         val millis =
-            this.convertStringToMillis(Constants.PATTERN_PARSE_TIME_SERVER, isApplyTimezone = true)
+            this.convertStringToMillis(Constants.PATTERN_PARSE_TIME_SERVER, isApplyTimezone = false)
         return if (millis != 0.toLong()) {
             val cal = Calendar.getInstance()
             cal.timeInMillis = millis
@@ -54,13 +54,13 @@ fun Long?.timeFormat(
 }
 
 fun String?.isToday(): Boolean {
-    this.convertStringToMillis(Constants.PATTERN_PARSE_TIME_SERVER, isApplyTimezone = true).apply {
+    this.convertStringToMillis(Constants.PATTERN_PARSE_TIME_SERVER, isApplyTimezone = false).apply {
         return DateUtils.isToday(this)
     }
 }
 
 fun String?.isPast(): Boolean {
-    this.convertStringToMillis(Constants.PATTERN_PARSE_TIME_SERVER, isApplyTimezone = true).apply {
+    this.convertStringToMillis(Constants.PATTERN_PARSE_TIME_SERVER, isApplyTimezone = false).apply {
         return !DateUtils.isToday(this) && Calendar.getInstance().timeInMillis > this
     }
 }

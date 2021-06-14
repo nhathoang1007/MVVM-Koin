@@ -3,6 +3,7 @@ package com.example.observableresearch.model
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import androidx.annotation.ColorRes
 import com.example.observableresearch.R
 import com.example.observableresearch.extensions.*
 import com.google.gson.annotations.SerializedName
@@ -19,32 +20,48 @@ open class Assignment(
     @SerializedName("total_exercise")
     var exerciseCount: Int = 0,
     var status: Int = 0,
-    var isMarked: Boolean = false
+    var isCompletedMarked: Boolean = false
 ) : RealmObject() {
 
-    fun getStatus(timestamp: String?): SpannableStringBuilder {
+    fun isCompletedTask(): Boolean =
+        isCompletedMarked || Status.getByValue(status) == Status.COMPLETED
+
+    fun getStatus(timestamp: String?): Pair<SpannableStringBuilder, Int> {
         val temps = R.string.exercises_size.getString().formatString(exerciseCount)
         val mStatus = Status.getByValue(status)
         return when {
-            mStatus == Status.COMPLETED -> {
-                SpannableStringBuilder(R.string.completed.getString())
+            isCompletedMarked || mStatus == Status.COMPLETED -> {
+                Pair(SpannableStringBuilder(R.string.completed.getString()), R.color.white)
             }
             timestamp.isPast() || mStatus == Status.MISSED -> {
-                val missed = R.string.missed.getString()
-                val task = " • $temps"
-                val span = SpannableStringBuilder(missed.plus(task))
-                span.setSpan(
-                    ForegroundColorSpan(R.color.color_red.getColor()),
-                    0,
-                    missed.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                Pair(
+                    getSpannable(R.string.missed, temps, R.color.color_red),
+                    R.color.color_text_default
                 )
-                span
+            }
+            timestamp.isToday() -> {
+                Pair(
+                    getSpannable(R.string.assigned, temps, R.color.color_blue),
+                    R.color.color_text_default
+                )
             }
             else -> {
-                SpannableStringBuilder(temps)
+                Pair(SpannableStringBuilder(temps), R.color.color_grey)
             }
         }
+    }
+
+    private fun getSpannable(idName: Int, temps: String, @ColorRes color: Int): SpannableStringBuilder {
+        val text = idName.getString()
+        val task = " • $temps"
+        val span = SpannableStringBuilder(text.plus(task))
+        span.setSpan(
+            ForegroundColorSpan(color.getColor()),
+            0,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return span
     }
 }
 
