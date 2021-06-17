@@ -74,9 +74,11 @@ dependencies {
     implementation deps.di.koin
     implementation deps.di.koin_androix
     implementation deps.di.koin_viewmodel
+    implementation deps.webrtc
+    implementation deps.support.image
+    implementation deps.jetpack.navigating_compose
+
     implementation(deps.resful.socket) {
         exclude group: 'org.json', module: 'json'
     }
-    implementation deps.webrtc
-    implementation deps.support.image
 }

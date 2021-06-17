@@ -3,12 +3,12 @@ package com.example.observableresearch.customize.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.graphics.Path.FillType
 import android.util.AttributeSet
 import android.view.View
 import com.example.observableresearch.R
 import com.example.observableresearch.extensions.dp
 import com.example.observableresearch.utils.EnumCompanion
-
 
 @SuppressLint("Recycle")
 class JsShapeView @JvmOverloads constructor(
@@ -17,26 +17,29 @@ class JsShapeView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : View(context, attrs, defStyle) {
 
-    var mSize: Int = 0
-    var mShape: Shape = Shape.RECT
-    var mShapeRadius: Int = 16.dp
-    var mFillColor: Int = Color.GRAY
-    var mStrokeColor: Int? = null
-    var mStrokeWidth: Int = 0.dp
-    var mShadowColor: Int? = null
-    var mShadowPosition: ShadowPosition = ShadowPosition.BOTTOM
+    private var mSize: Int = 0
+    private var mShape: Shape = Shape.RECT
+    private var mShapeRadius: Int = 16.dp
+    private var mFillColor: Int = Color.GRAY
+    private var mStrokeColor: Int? = null
+    private var mStrokeWidth: Int = 0.dp
+    private var mShadowColor: Int? = null
+    private var mShadowSize: Int = 12.dp
+    private var mShadowPosition: ShadowPosition = ShadowPosition.BOTTOM
 
     init {
         kotlin.runCatching {
             context.obtainStyledAttributes(attrs, R.styleable.JsShapeView).apply {
+                /*fill shape config*/
                 mShape = Shape.getByValue(getInt(R.styleable.JsShapeView_js_shape, 0), Shape.RECT)
                 mFillColor = getColor(R.styleable.JsShapeView_js_fill_color, Color.WHITE)
+                /*Stroke config*/
                 if (hasValue(R.styleable.JsShapeView_js_stroke_color)) {
                     mStrokeColor = getColor(R.styleable.JsShapeView_js_stroke_color, Color.WHITE)
                 }
                 mShapeRadius = getDimensionPixelSize(R.styleable.JsShapeView_js_shape_radius, 16.dp)
                 mStrokeWidth = getDimensionPixelSize(R.styleable.JsShapeView_js_stroke_width, 0.dp)
-
+                /*Shadow config*/
                 if (hasValue(R.styleable.JsShapeView_js_shadow_color)) {
                     mShadowColor = getColor(R.styleable.JsShapeView_js_shadow_color, Color.WHITE)
                 }
@@ -44,6 +47,7 @@ class JsShapeView @JvmOverloads constructor(
                     getInt(R.styleable.JsShapeView_js_shadow_gravity, 0),
                     ShadowPosition.BOTTOM
                 )
+                mShadowSize = getDimensionPixelSize(R.styleable.JsShapeView_js_shadow_size, 12.dp)
 
                 this.recycle()
             }
@@ -63,7 +67,7 @@ class JsShapeView @JvmOverloads constructor(
             color = mFillColor
             if (mShadowColor != null) {
                 setShadowLayer(
-                    16.dp.toFloat(),
+                    mShadowSize.toFloat(),
                     mShadowPosition.x,
                     mShadowPosition.y,
                     mShadowColor!!
@@ -76,6 +80,7 @@ class JsShapeView @JvmOverloads constructor(
             strokeWidth = mStrokeWidth.toFloat()
             style = Paint.Style.STROKE
         }
+        val centerOfCanvas = Point(width / 2, height / 2)
         val margin = if (mShadowColor != null) {
             16
         } else {
@@ -91,7 +96,6 @@ class JsShapeView @JvmOverloads constructor(
                 val rect = if (mShape == Shape.RECT) {
                     RectF(margin, margin, width - margin, height - margin)
                 } else {
-                    val centerOfCanvas = Point(width / 2, height / 2)
                     RectF(
                         centerOfCanvas.x - (mSize / 2 - margin),
                         centerOfCanvas.y - (mSize / 2 - margin),
@@ -112,13 +116,32 @@ class JsShapeView @JvmOverloads constructor(
                     paintStroke
                 )
             }
+            Shape.TRIANGLE -> {
+                val a = Point(width / 2, margin.toInt())
+                val b = Point(width / 2 - mSize / 2, height - margin.toInt())
+                val c = Point(width / 2 + mSize / 2, height - margin.toInt())
+
+                val path = Path()
+                path.fillType = FillType.EVEN_ODD
+                path.moveTo(a.x.toFloat(), a.y.toFloat())
+                path.lineTo(b.x.toFloat(), b.y.toFloat())
+                path.moveTo(b.x.toFloat() - 4, b.y.toFloat())
+                path.lineTo(c.x.toFloat(), c.y.toFloat())
+                path.moveTo(c.x.toFloat() - 4, c.y.toFloat())
+                path.lineTo(a.x.toFloat(), a.y.toFloat() + 4)
+                path.close()
+
+                canvas?.drawPath(path, paintFill)
+                canvas?.drawPath(path, paintStroke)
+            }
         }
     }
 
     enum class Shape(val style: Int) {
         CIRCLE(0),
         RECT(1),
-        SQUARE(2);
+        SQUARE(2),
+        TRIANGLE(3);
 
         companion object : EnumCompanion<Int, Shape>(values().associateBy(Shape::style))
     }
