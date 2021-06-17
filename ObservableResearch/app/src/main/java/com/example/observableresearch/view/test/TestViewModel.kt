@@ -57,6 +57,7 @@ class TestViewModel(private val repository: WorkoutRepository) : BaseViewModel()
                 _dataObs.postValue(it)
                 repository.loadWorkoutFromLocalStorage()
                     .observeOnUiThread()
+                    .onErrorReturn { mutableListOf() }
                     .map { local -> local.merge() }
             }.flatMap {
                 _dataObs.postValue(it)

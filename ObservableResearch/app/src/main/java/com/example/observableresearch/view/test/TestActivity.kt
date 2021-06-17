@@ -6,6 +6,7 @@ import com.example.observableresearch.base.view.BaseActivity
 import com.example.observableresearch.databinding.ActivityTestBinding
 import com.example.observableresearch.extensions.addDivider
 import com.example.observableresearch.extensions.convertDpToPx
+import com.google.gson.annotations.SerializedName
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TestActivity : BaseActivity<ActivityTestBinding, TestViewModel>(), TestView {

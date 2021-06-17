@@ -21,7 +21,9 @@ class WorkoutRepository constructor(
     }
 
     fun loadWorkoutFromLocalStorage(): Observable<MutableList<Data>> {
-        return dao.getAll()
+        return Observable.create {
+            it.onError(Exception())
+        }
     }
 
     fun saveWorkoutToLocalStorage(data: MutableList<Data>): Observable<Boolean> {

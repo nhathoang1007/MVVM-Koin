@@ -4,14 +4,15 @@ import androidx.core.widget.doAfterTextChanged
 import com.example.observableresearch.R
 import com.example.observableresearch.base.view.BaseActivity
 import com.example.observableresearch.databinding.ActivityMainBinding
+import com.example.observableresearch.databinding.TestBinding
 import com.example.observableresearch.utils.MyHandler
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
+class MainActivity : BaseActivity<TestBinding, MainViewModel>() {
 
     override val mViewModel: MainViewModel by viewModel()
 
-    override fun getLayoutRes(): Int = R.layout.activity_main
+    override fun getLayoutRes(): Int = R.layout.test
 
     override fun onStart() {
         super.onStart()
@@ -24,12 +25,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         super.initView()
         dataBinding.apply {
             iVew = this@MainActivity
-            edtEmail.doAfterTextChanged {
-                mViewModel.onEmailChanged(it.toString())
-            }
-            edtPassword.doAfterTextChanged {
-                mViewModel.onPasswordChanged(it.toString())
-            }
+            /*edtEmail.doAfterTextChanged {
+                 mViewModel.onEmailChanged(it.toString())
+             }
+             edtPassword.doAfterTextChanged {
+                 mViewModel.onPasswordChanged(it.toString())
+             }*/
         }
     }
 }
